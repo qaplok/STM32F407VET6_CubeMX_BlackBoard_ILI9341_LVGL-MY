@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "lvgl_gui.h": "c",
+        "stm32f4xx_hal_rtc.h": "c",
+        "stm32f4xx_hal.h": "c"
+    }
+}
