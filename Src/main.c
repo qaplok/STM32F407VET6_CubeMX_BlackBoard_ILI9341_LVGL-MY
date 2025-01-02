@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stm32f4xx.h>
 #include "XPT2046_touch.h"
 #include "ili9341.h"
 #include <stdio.h>
@@ -30,6 +31,9 @@
 #include "lvgl_GUI.h"
 #include "lvgl_init_f407.h"
 #include "stm32f4xx_hal.h"
+#include "tim.h"
+
+
 
 /* USER CODE END Includes */
 
@@ -52,6 +56,7 @@ UART_HandleTypeDef huart1;
 RTC_HandleTypeDef hrtc;
 
 SPI_HandleTypeDef hspi2;
+DMA_HandleTypeDef hdma_usart1_rx;
 
 DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 SRAM_HandleTypeDef hsram1;
@@ -71,6 +76,7 @@ static void MX_FSMC_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_RTC_Init(void);
 static void MX_USART1_UART_Init(void);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -89,6 +95,9 @@ char str4[20];
 char str[20];
 bool flag1;
 uint16_t strw;
+
+uint8_t rxData[1023];
+uint8_t txData[1023];
 /* USER CODE END 0 */
 
 /**
@@ -124,6 +133,7 @@ int main(void)
   MX_SPI2_Init();
   MX_RTC_Init();
   MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   lcdBacklightOn();
@@ -131,15 +141,18 @@ int main(void)
 	  lv_init();
 	  lv_lcd_init();
 	  lv_touchpad_init();
+  /* Setup PWM. */
+ 
+  /* Create GUI */  
 	  lvgl_GUI();
     settings_window();
     time_window();
 
     start_screen();
 
-
+  //HAL_UART_Receive_DMA(&huart1, rxData, 1);
   /* USER CODE END 2 */
-
+  
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1)  {
@@ -229,7 +242,6 @@ void SystemClock_Config(void)
 }
 
 
-/* USART1 init function */
 static void MX_USART1_UART_Init(void)
 {
 
@@ -246,6 +258,11 @@ static void MX_USART1_UART_Init(void)
     Error_Handler();
   }
 
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    HAL_UART_Transmit(&huart1, rxData, 1, 100);
+    HAL_UART_Receive_DMA(&huart1, rxData, 1);
 }
 
 /**
@@ -321,6 +338,10 @@ void DATE_set(uint8_t wd, uint8_t dy, uint8_t mnth, uint16_t yr)
   {
     Error_Handler();
   }
+}
+//--------------------------------------------------------------------------------------------------
+void Start_PWM_24(void){
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 }
 
 /**

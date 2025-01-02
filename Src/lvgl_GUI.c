@@ -382,19 +382,19 @@ static void button_event_handler(lv_obj_t* btn, lv_event_t event)
     if (btn == btn_set_time) {
         RTC_set(new_time.Hours, new_time.Minutes);
         lv_scr_load(tv);
-        lcdPrintf("@%di %di ",  new_time.Hours, new_time.Minutes);
+        //lcdPrintf("@%di %di ",  new_time.Hours, new_time.Minutes);
         
     }
     if (btn == btn_set_date) {
         DATE_set(new_date.wd, new_date.day, new_date.month, new_date.year);
         lv_scr_load(tv);
-        lcdPrintf("@%di %di %di %di ", new_date.wd, new_date.day, new_date.month, new_date.year);
+        //lcdPrintf("@%di %di %di %di ", new_date.wd, new_date.day, new_date.month, new_date.year);
     }
     if (btn == btn_Tx) {
 
     }
     if (btn == btn_Rx) {
-
+        Start_PWM_24();
     }
     if (btn == btn_ILink) {
 

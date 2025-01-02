@@ -54,6 +54,7 @@ extern "C" {
 void Error_Handler(void);
 void RTC_set(uint8_t hrs, uint8_t mnts);
 void DATE_set(uint8_t wd, uint8_t dy, uint8_t mnth, uint16_t yr);
+void Start_PWM_24(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
